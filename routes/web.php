@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,13 +16,13 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function () {
-    if (Auth::check()) {
-        return Inertia::render('Index');
-    } else {
-        return Inertia::render('Auth/Login');
-    }
-});
+// Route::get('/', function () {
+//     if (Auth::check()) {
+//         return Inertia::render('Items/Index');
+//     } else {
+//         return Inertia::render('Auth/Login');
+//     }
+// });
 
 // Route::get('/', function () {
 //     return Inertia::render('Auth/Login');
@@ -36,13 +37,23 @@ Route::get('/', function () {
 //     ]);
 // });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/index', function () {
-    return Inertia::render('Index');
-})->middleware('auth')->name('index');
+// Route::get('/items', function () {
+//     return Inertia::render('Items/Index');
+// })->middleware('auth')->name('index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+    Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+    Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+    Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+    Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
