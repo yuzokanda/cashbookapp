@@ -14,7 +14,13 @@ const props = defineProps({
 const form = useForm({});
 
 const day = new Date();
-
+// リアルタイムの年月表示と月日表示機能追加
+const options1 = { year: 'numeric', month: 'long' };
+const options2 = { month: 'numeric', day: 'numeric', };
+// 項目を支出日の降順にソート機能追加
+const sortedItems = computed(() => {
+    return props.items.sort((a, b) => new Date(b.date) - new Date(a.date));
+});
 
 const amountTotal = computed(() => {
     return props.items.reduce((sum, item) => sum + (item.amount || 0), 0);
@@ -29,7 +35,7 @@ function destroy(id) {
 </script>
 
 <template>
-    <Head title="items" />
+    <Head title="ITEMS" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -51,7 +57,7 @@ function destroy(id) {
                             </div>
                             <div class="px-2 py-2 text-sm text-gray-900 dark:text-white whitespace-nowrap">
                                 <!-- 現在日時表示とメソッドの切り分け修正予定 -->
-                                支出合計 ¥ {{ amountTotal.toLocaleString() }} ({{ day.toLocaleDateString() }}現在)
+                                {{ day.toLocaleDateString('ja-JP', options1) }}支出合計 ¥ {{ amountTotal.toLocaleString() }} ({{ day.toLocaleDateString('ja-JP', options2) }}現在)
                             </div>
                         </div>
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -59,7 +65,7 @@ function destroy(id) {
                                 <thead
                                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3">#</th>
+                                        <!-- <th scope="col" class="px-6 py-3">#</th> -->
                                         <th scope="col" class="px-6 py-3">
                                             Content
                                         </th>
@@ -81,12 +87,12 @@ function destroy(id) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        <tr v-for="item in items" :key="item.id"
+                                        <tr v-for="item in sortedItems" :key="item.id"
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <th scope="row"
+                                            <!-- <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
                                                 {{ item.id }}
-                                            </th>
+                                            </th> -->
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
                                                 {{ item.content }}
