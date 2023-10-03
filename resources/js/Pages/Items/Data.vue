@@ -1,46 +1,53 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
-import { computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
-const props = defineProps({
-    items: {
-        type: Object,
-        default: () => ({}),
-    },
+
+let items = ref([]);
+let month = ("0"+(new Date().getMonth() + 1)).slice(-2)
+// 現在の年と月を初期値に設定
+let selectedPeriod = ref(`${new Date().getFullYear()}-${month}`);
+// 過去12ヶ月分の年と月の組み合わせを選択肢に設定
+let periods = Array.from({length: 12}, (_, i) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - i);
+    return `${date.getFullYear()}-${("0"+(date.getMonth() + 1)).slice(-2)}`;
 });
 
 const form = useForm({});
-
-const day = new Date();
-// リアルタイムの年月表示と月日表示機能追加
-const options1 = { year: 'numeric', month: 'long' };
-const options2 = { month: 'numeric', day: 'numeric', };
-// 項目を支出日の降順にソート機能追加
+// 支出日降順にソート
 const sortedItems = computed(() => {
-    return props.items.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return items.value.sort((a, b) => new Date(b.date) - new Date(a.date));
+});
+// 支出合計金額を算出
+const amountTotal = computed(() => {
+    return items.value.reduce((sum, item) => sum + (item.amount || 0), 0);
 });
 
-const amountTotal = computed(() => {
-    return props.items.reduce((sum, item) => sum + (item.amount || 0), 0);
-});
+// 選択月のitemsをfetch apiにより非同期にDBよりjson形式にて取得
+const fetchData = async () => {
+    const response = await fetch(`/data/${selectedPeriod.value}`);
+    items.value = await response.json();
+};
+// DOMへのマウント直後にfetchDataを実行
+onMounted(fetchData);
 
 function destroy(id) {
     if (confirm("Are you sure you want to Delete?")) {
         form.delete(route("items.destroy", id));
     }
 }
-
 </script>
 
 <template>
-    <Head title="INDEX" />
+    <Head title="DATA" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="text-xm font-semibold uppercase leading-tight text-gray-800">
-                Index
+                data
             </div>
         </template>
 
@@ -48,7 +55,6 @@ function destroy(id) {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <!-- flex justify-between ...を使いADD ITEMボタンと現在日時表示を左右両端に分ける -->
                         <div class="flex justify-between ... mb-2">
                             <div class="px-2">
                                 <Link :href="route('items.create')">
@@ -57,9 +63,16 @@ function destroy(id) {
                             </div>
                             <div class="px-2 py-2 text-sm text-gray-900 dark:text-white whitespace-nowrap">
                                 <!-- 現在日時表示とメソッドの切り分け修正予定 -->
-                                {{ day.toLocaleDateString('ja-JP', options1) }}支出合計 ¥ {{ amountTotal.toLocaleString() }} ({{ day.toLocaleDateString('ja-JP', options2) }}現在)
+                                {{ selectedPeriod }}月支出合計 ¥ {{ amountTotal.toLocaleString() }}
+                            </div>
+                            <div class="px-2">
+                            <div>
+                                <select v-model="selectedPeriod" @change="fetchData">
+                                    <option v-for="period in periods" :key="period" :value="period">{{ period }}</option>
+                                </select>
                             </div>
                         </div>
+                    </div>
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead
@@ -77,12 +90,6 @@ function destroy(id) {
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             Date
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Edit
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Delete
                                         </th>
                                     </tr>
                                 </thead>
