@@ -10,7 +10,10 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $items = Item::all();
+        $now=date('Y-m');
+        $items = Item::where('date','like', "%$now%")
+                ->get();
+        // $items = Item::all();
 
         return Inertia::render('Items/Index',['items' => $items]);
     }
@@ -35,12 +38,12 @@ class ItemController extends Controller
             'date' => $request->date
         ]);
 
+        // return back()->with('message', 'Item Created Successfully');
         return redirect()->route('items.index')->with('message', 'Item Created Successfully');
     }
 
     public function edit(Item $item)
     {
-        \Log::debug($item);
         return Inertia::render('Items/Edit', [
             'item' => $item
         ]);
@@ -66,9 +69,20 @@ class ItemController extends Controller
 
     public function destroy(Item $item)
     {
-        \Log::debug($item);
         $item->delete();
 
         return redirect()->route('items.index')->with('message', 'Item Delete Successfully');
+    }
+
+    public function getData()
+    {
+        return Inertia::render('Items/Data');
+    }
+
+    public function getItemsByMonthly(Request $request, $data)
+    {
+        $items = Item::where('date','like', "%$data%")
+                ->get();
+        return response()->json($items);
     }
 }

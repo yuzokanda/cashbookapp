@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
     Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
     Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+    Route::get('/data', [ItemController::class, 'getData'])->name('getData');
+    Route::get('/data/{data}', [ItemController::class, 'getItemsByMonthly'])->name('getItemsByMonthly');
 });
 
 Route::middleware('auth')->group(function () {
