@@ -1,11 +1,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
-import { computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Inertia } from '@inertiajs/inertia';
+import { useStore } from 'vuex';
 
 const props = defineProps({
-    items: {
+    periods: {
         type: Object,
         default: () => ({}),
     },
@@ -13,34 +15,84 @@ const props = defineProps({
 
 const form = useForm({});
 
-const day = new Date();
-// リアルタイムの年月表示と月日表示機能追加
-const options1 = { year: 'numeric', month: 'long' };
-const options2 = { month: 'numeric', day: 'numeric', };
-// 項目を支出日の降順にソート機能追加
+const store = useStore();
+
+let items = ref([]);
+
+let selectedPeriod = ref(store.state.selectedPeriod || props.periods[0]);
+
+// computedにより値が変化した場合のみ選択処理された年月を年と月に分離し代入
+const parts = computed(() => {
+    return selectedPeriod.value.split('-');
+});
+// computedにより値が変化した場合のみ分離処理した年を代入
+const selectYear = computed(() => {
+    return parts.value[0];
+});
+// computedにより値が変化した場合のみ分離処理された月を代入
+const selectMonth = computed(() => {
+    return parseInt(parts.value[1]);
+});
+// computedにより値が変化した場合のみ日本語形式(⚪︎年⚪︎月)に処理された値を代入
+const formattedPeriod = computed(() => {
+    return `${selectYear.value}年${selectMonth.value}月`;
+});
+
+// 支出日降順にソート
 const sortedItems = computed(() => {
-    return props.items.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return items.value.sort((a, b) => new Date(b.date) - new Date(a.date));
 });
-
+// 支出合計金額を算出
 const amountTotal = computed(() => {
-    return props.items.reduce((sum, item) => sum + (item.amount || 0), 0);
+    return items.value.reduce((sum, item) => sum + (item.amount || 0), 0);
 });
-
-function destroy(id) {
-    if (confirm("Are you sure you want to Delete?")) {
-        form.delete(route("items.destroy", id));
+// try,catchのエラー処理をしつつ、fetch apiにより非同期に選択月のitems取得
+const fetchData = async () => {
+    try {
+        const response = await fetch(`/items/${store.state.selectedPeriod}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        items.value = await response.json();
+    } catch (error) {
+        console.error('An error occurred while fetching the data: ', error);
     }
-}
+};
+console.log(store.state.selectedPeriod);
+console.log('↑store.state');
+console.log(props.periods[0]);
 
+// DOMマウント直後にif条件分岐でfetchData()を実行
+onMounted(() => {
+    if (!store.state.selectedPeriod) {
+    store.dispatch('updateSelectedPeriod', props.periods[0]);
+    }
+    fetchData();
+});
+// 年月の再選択によりselectedPeriodのstate変更
+const changePeriod = async (period) => {
+    await store.dispatch('updateSelectedPeriod', period);
+    fetchData();
+};
+
+const deleteItem = (id) => {
+    if (confirm("本当に削除しますか？")) {
+        form.delete(route("items.destroy", id), {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => fetchData(),
+        });
+    };
+};
 </script>
 
 <template>
-    <Head title="INDEX" />
+    <Head title="items" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="text-xm font-semibold uppercase leading-tight text-gray-800">
-                Index
+                ITEMS
             </div>
         </template>
 
@@ -48,7 +100,6 @@ function destroy(id) {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <!-- flex justify-between ...を使いADD ITEMボタンと現在日時表示を左右両端に分ける -->
                         <div class="flex justify-between ... mb-2">
                             <div class="px-2">
                                 <Link :href="route('items.create')">
@@ -57,9 +108,16 @@ function destroy(id) {
                             </div>
                             <div class="px-2 py-2 text-sm text-gray-900 dark:text-white whitespace-nowrap">
                                 <!-- 現在日時表示とメソッドの切り分け修正予定 -->
-                                {{ day.toLocaleDateString('ja-JP', options1) }}支出合計 ¥ {{ amountTotal.toLocaleString() }} ({{ day.toLocaleDateString('ja-JP', options2) }}現在)
+                                {{ formattedPeriod }}支出合計 ¥ {{ amountTotal.toLocaleString() }}
+                            </div>
+                            <div class="px-2">
+                            <div>
+                                <select v-model.lazy="selectedPeriod" @change="changePeriod(selectedPeriod)">
+                                    <option v-for="period in periods" :key="period" :value="period">{{ period }}</option>
+                                </select>
                             </div>
                         </div>
+                    </div>
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead
@@ -110,11 +168,10 @@ function destroy(id) {
                                                 {{ item.date }}
                                             </th>
                                             <td class="px-6 py-4">
-                                                <Link :href="route('items.edit', item.id)
-                                                    " class="px-4 py-2 text-white bg-blue-600 rounded-lg">Edit</Link>
+                                                <Link :href="route('items.edit', item.id)" class="px-4 py-2 text-white bg-blue-600 rounded-lg">Edit</Link>
                                             </td>
                                             <td class="px-6 py-4">
-                                                <PrimaryButton class="bg-red-700" @click="destroy(item.id)">
+                                                <PrimaryButton class="bg-red-700" @click="deleteItem(item.id)">
                                                     Delete
                                                 </PrimaryButton>
                                             </td>

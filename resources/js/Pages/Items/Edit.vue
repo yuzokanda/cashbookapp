@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
+// import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
     item: {
@@ -12,7 +13,6 @@ const props = defineProps({
         default: () => ({}),
     },
 });
-console.log(props.item);
 
 const form = useForm({
     id: props.item.id,
@@ -21,14 +21,11 @@ const form = useForm({
     category: props.item.category,
     date: props.item.date,
 });
-console.log('がががががが');
-console.log(form.id);
-
-
 
 const submit = () => {
     form.put(route("items.update", props.item.id));
 };
+
 </script>
 
 <template>
@@ -43,7 +40,7 @@ const submit = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-3xl">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg flex justify-center ...">
                     <div class="p-6 bg-white border-b border-gray-200">
                         <form @submit.prevent="submit">
                             <div>
@@ -57,24 +54,21 @@ const submit = () => {
                             <div>
                                 <InputLabel for="amount" value="amount" />
 
-                                <TextInput id="amount" type="number" class="mt-1 block w-32" v-model="form.amount" required
-                                    autofocus autocomplete="username" />
+                                <TextInput id="amount" type="number" class="mt-1 block w-32" v-model="form.amount" required autocomplete="username" />
 
                                 <InputError class="mt-2" :message="form.errors.amount" />
                             </div>
                             <div>
                                 <InputLabel for="category" value="category" />
 
-                                <TextInput id="category" type="text" class="mt-1 block w-40" v-model="form.category" required
-                                    autofocus autocomplete="username" />
+                                <TextInput id="category" type="text" class="mt-1 block w-40" v-model="form.category" required autocomplete="username" />
 
                                 <InputError class="mt-2" :message="form.errors.category" />
                             </div>
                             <div>
                                 <InputLabel for="date" value="date" />
 
-                                <TextInput id="date" type="date" class="mt-1 block w-40" v-model="form.date" required
-                                    autofocus autocomplete="username" />
+                                <TextInput id="date" type="date" class="mt-1 block w-40" v-model="form.date" required autocomplete="username" />
 
                                 <InputError class="mt-2" :message="form.errors.date" />
                             </div>
