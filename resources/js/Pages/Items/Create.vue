@@ -5,23 +5,33 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref, reactive } from 'vue';
+import { useStore } from 'vuex';
 
-const props = defineProps({
-        items: {
-            type: Object,
-            default: () => ({}),
-        },
-    });
+const store = useStore();
 
-const form = useForm({
+const form = reactive(useForm({
     content: "",
     amount: "",
     category: "",
     date: "",
-});
+}));
 
-const submit = () =>  {
-    form.post(route("items.store"));
+let selectedPeriod = ref(store.state.selectedPeriod);
+
+let isSubmitting = false;
+const submit = () => {
+    isSubmitting = true;
+    form.post(route('items.store'), {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            store.dispatch('updateSelectedPeriod', selectedPeriod.value);
+            form.reset();
+            // Inertia.visit(route('items.index'));
+            isSubmitting = false;
+        },
+    });
 };
 
 </script>
@@ -64,7 +74,6 @@ const submit = () =>  {
                                     class="mt-1 block w-32"
                                     v-model="form.amount"
                                     required
-                                    autofocus
                                 />
 
                                 <InputError
@@ -81,7 +90,6 @@ const submit = () =>  {
                                     class="mt-1 block w-40"
                                     v-model="form.category"
                                     required
-                                    autofocus
                                 />
 
                                 <InputError
@@ -98,7 +106,6 @@ const submit = () =>  {
                                     class="mt-1 block w-40"
                                     v-model="form.date"
                                     required
-                                    autofocus
                                 />
 
                                 <InputError
@@ -113,7 +120,8 @@ const submit = () =>  {
                                 type="submit"
                                 class="mt-4"
                                 :class="{ 'opacity-25': form.processing }"
-                                :disabled="form.processing"
+                                :disabled="form.processing || isSubmitting"
+                                @click="submit"
                             >
                                 Add
                             </PrimaryButton>

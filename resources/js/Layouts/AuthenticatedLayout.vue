@@ -2,10 +2,20 @@
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
+// import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { useStore } from 'vuex';
+// import { Inertia } from '@inertiajs/inertia';
 
+const store = useStore();
+
+const isLogout = () => {
+    // Vuexの状態をリセット
+            store.commit('resetState');
+            // ストレージからVuexの状態を削除
+            // window.sessionStorage.removeItem('vuex');
+};
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -24,16 +34,16 @@ const showingNavigationDropdown = ref(false);
                                     CashBook
                                 </Link>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
+                            <!-- <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
                                 <NavLink :href="route('items.index')" :active="route().current('items.index')">
                                     Index
                                 </NavLink>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
+                            </div> -->
+                            <!-- <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
                                 <NavLink :href="route('getData')" :active="route().current('getData')">
                                     Data
                                 </NavLink>
-                            </div>
+                            </div> -->
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -66,7 +76,7 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> プロファイル </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
+                                        <DropdownLink :href="route('logout')" method="post" as="button" @click="isLogout">
                                             ログアウト
                                         </DropdownLink>
                                     </template>
@@ -123,7 +133,7 @@ const showingNavigationDropdown = ref(false);
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')"> プロファイル </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+                            <ResponsiveNavLink :href="route('logout')" method="post" as="button" @click="isLogout">
                                 ログアウト
                             </ResponsiveNavLink>
                         </div>
