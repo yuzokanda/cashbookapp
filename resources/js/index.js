@@ -27,15 +27,17 @@ export default createStore({
         },
         // ログアウト時に呼び出すアクション
         resetState({ commit }) {
+            // mutationsのresetStateを実行
             commit('resetState');
             // ストレージからVuexの状態を削除
             window.sessionStorage.removeItem('vuex');
         },
     },
-    plugins: [createPersistedState({ storage: window.sessionStorage,
-        // ログアウト時にストレージからVuexの状態を削除
-        filter(mutation) {
-            return mutation.type !== 'resetState';
-        },
-    })],
+    plugins: [createPersistedState({ storage: window.sessionStorage })],
+    // stateのリセットのみmutationsから直接実行の場合、resetState以外のmutationの結果を永続化
+    // plugins: [createPersistedState({ storage: window.sessionStorage,
+    //     filter(mutation) {
+    //         return mutation.type !== 'resetState';
+    //     },
+    // })],
 });

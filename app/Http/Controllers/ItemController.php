@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Item;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,9 +27,9 @@ class ItemController extends Controller
 
     public function getItemsByMonthly(Request $request, $data)
     {
-        \Log::debug($data);
         $items = Item::where('date','like', "%$data%")
                 ->where('user_id', Auth::id())
+                ->with('category')
                 ->get();
 
         return response()->json($items);
@@ -36,7 +37,11 @@ class ItemController extends Controller
 
     public function create()
     {
-        return Inertia::render('Items/Create');
+        $category_id= Category::where('user_id', Auth::id())->get();
+
+        return Inertia::render('Items/Create',[
+            'category_id' => $category_id
+        ]);
     }
 
     public function store(Request $request)
@@ -44,7 +49,7 @@ class ItemController extends Controller
         $request->validate([
             'content' => 'required|string',
             'amount' => 'required|numeric',
-            'category' => 'required|string',
+            'category_id' => 'required',
             'date' => 'required|date'
         ]);
 
@@ -54,7 +59,7 @@ class ItemController extends Controller
             'user_id' => $user_id,
             'content' => $request->content,
             'amount' => $request->amount,
-            'category' => $request->category,
+            'category_id' => $request->category_id,
             'date' => $request->date
         ]);
 
@@ -63,8 +68,11 @@ class ItemController extends Controller
 
     public function edit(Item $item)
     {
+        $category_id= Category::where('user_id', Auth::id())->get();
+
         return Inertia::render('Items/Edit', [
             'item' => $item,
+            'category_id' => $category_id,
         ]);
     }
 
@@ -73,13 +81,13 @@ class ItemController extends Controller
         $request->validate([
             'content' => 'required|string',
             'amount' => 'required|numeric',
-            'category' => 'required|string',
+            'category_id' => 'required',
             'date' => 'required|date'
         ]);
 
         $item->content = $request->content;
         $item->amount = $request->amount;
-        $item->category = $request->category;
+        $item->category_id = $request->category_id;
         $item->date = $request->date;
         $item->save();
 
@@ -90,8 +98,6 @@ class ItemController extends Controller
     {
         $item->delete();
 
-        // return Inertia::render('Items/Index');
-        // return redirect()->route('getData');
         return redirect()->route('items.index')->with('message', 'Item Delete Successfully');
     }
 }

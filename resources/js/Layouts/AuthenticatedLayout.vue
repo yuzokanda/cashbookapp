@@ -2,19 +2,18 @@
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-// import NavLink from '@/Components/NavLink.vue';
+import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import { useStore } from 'vuex';
-// import { Inertia } from '@inertiajs/inertia';
 
 const store = useStore();
 
 const isLogout = () => {
-    // Vuexの状態をリセット
-            store.commit('resetState');
-            // ストレージからVuexの状態を削除
-            // window.sessionStorage.removeItem('vuex');
+    // stateの状態をリセットと永続化ストレージからstateを削除
+            store.dispatch('resetState');
+            // stateのリセットのみ実行の場合、mutationsから直接実行
+            // store.commit('resetState');
 };
 
 const showingNavigationDropdown = ref(false);
@@ -34,16 +33,16 @@ const showingNavigationDropdown = ref(false);
                                     CashBook
                                 </Link>
                             </div>
-                            <!-- <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
                                 <NavLink :href="route('items.index')" :active="route().current('items.index')">
-                                    Index
+                                    index
                                 </NavLink>
-                            </div> -->
-                            <!-- <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
-                                <NavLink :href="route('getData')" :active="route().current('getData')">
-                                    Data
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
+                                <NavLink :href="route('categories.index')" :active="route().current('categories.index')">
+                                    category
                                 </NavLink>
-                            </div> -->
+                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">

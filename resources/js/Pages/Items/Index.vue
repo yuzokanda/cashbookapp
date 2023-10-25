@@ -3,7 +3,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref, onMounted, computed } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { Inertia } from '@inertiajs/inertia';
 import { useStore } from 'vuex';
 
 const props = defineProps({
@@ -58,9 +57,6 @@ const fetchData = async () => {
         console.error('An error occurred while fetching the data: ', error);
     }
 };
-console.log(store.state.selectedPeriod);
-console.log('↑store.state');
-console.log(props.periods[0]);
 
 // DOMマウント直後にif条件分岐でfetchData()を実行
 onMounted(() => {
@@ -111,19 +107,18 @@ const deleteItem = (id) => {
                                 {{ formattedPeriod }}支出合計 ¥ {{ amountTotal.toLocaleString() }}
                             </div>
                             <div class="px-2">
-                            <div>
-                                <select v-model.lazy="selectedPeriod" @change="changePeriod(selectedPeriod)">
-                                    <option v-for="period in periods" :key="period" :value="period">{{ period }}</option>
-                                </select>
+                                <div>
+                                    <select v-model.lazy="selectedPeriod" @change="changePeriod (selectedPeriod)">
+                                        <option v-for="period in periods" :key="period"     :value="period">{{ period }}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <!-- <th scope="col" class="px-6 py-3">#</th> -->
                                         <th scope="col" class="px-6 py-3">
                                             Content
                                         </th>
@@ -145,37 +140,37 @@ const deleteItem = (id) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        <tr v-for="item in sortedItems" :key="item.id"
+                                    <tr v-for="item in sortedItems" :key="item.id"
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <!-- <th scope="row"
+                                        <!-- <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
                                                 {{ item.id }}
-                                            </th> -->
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
-                                                {{ item.content }}
-                                            </th>
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
-                                                ¥ {{ item.amount.toLocaleString() }}
-                                            </th>
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
-                                                {{ item.category }}
-                                            </th>
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
-                                                {{ item.date }}
-                                            </th>
-                                            <td class="px-6 py-4">
-                                                <Link :href="route('items.edit', item.id)" class="px-4 py-2 text-white bg-blue-600 rounded-lg">Edit</Link>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <PrimaryButton class="bg-red-700" @click="deleteItem(item.id)">
-                                                    Delete
-                                                </PrimaryButton>
-                                            </td>
-                                        </tr>
+                                        </th> -->
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
+                                            {{ item.content }}
+                                        </th>
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
+                                            ¥ {{ item.amount.toLocaleString() }}
+                                        </th>
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
+                                            {{ item.category.name }}
+                                        </th>
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
+                                            {{ item.date }}
+                                        </th>
+                                        <td class="px-6 py-4">
+                                            <Link :href="route('items.edit', item.id)" class="px-4 py-2 text-white bg-blue-600 rounded-lg">Edit</Link>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <PrimaryButton class="bg-red-700" @click="deleteItem(item.id)">
+                                                Delete
+                                            </PrimaryButton>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
