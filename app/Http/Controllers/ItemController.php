@@ -13,6 +13,8 @@ class ItemController extends Controller
 {
     public function index()
     {
+        $category_id= Category::where('user_id', Auth::id())->get();
+
         $periods = Item::select(DB::raw("DATE_FORMAT(date, '%Y-%m') as period"))
                 ->where('user_id', Auth::id())
                 ->groupBy('period')
@@ -21,7 +23,8 @@ class ItemController extends Controller
                 ->pluck('period');
 
         return Inertia::render('Items/Index', [
-            'periods' => $periods
+            'periods' => $periods,
+            'category_id' => $category_id,
         ]);
     }
 

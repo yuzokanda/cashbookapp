@@ -10,7 +10,14 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    category_id: {
+        type: Object,
+        default: () => ({}),
+    },
 });
+
+let categories = ref(props.category_id);
+let selectedCategory = ref('');
 
 const form = useForm({});
 
@@ -18,11 +25,12 @@ const store = useStore();
 
 let items = ref([]);
 
+
 let selectedPeriod = ref(store.state.selectedPeriod || props.periods[0]);
 
 // computedにより値が変化した場合のみ選択処理された年月を年と月に分離し代入
 const parts = computed(() => {
-    return selectedPeriod.value.split('-');
+    return selectedPeriod.value ? selectedPeriod.value.split('-') : [];
 });
 // computedにより値が変化した場合のみ分離処理した年を代入
 const selectYear = computed(() => {
@@ -37,13 +45,17 @@ const formattedPeriod = computed(() => {
     return `${selectYear.value}年${selectMonth.value}月`;
 });
 
-// 支出日降順にソート
-const sortedItems = computed(() => {
-    return items.value.sort((a, b) => new Date(b.date) - new Date(a.date));
+// 選択したカテゴリーのitemを支出日降順にソート
+const filteredItems = computed(() => {
+    let filtered = items.value;
+    if (selectedCategory.value) {
+        filtered = items.value.filter(item => item.category.id === selectedCategory.value);
+    }
+    return filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 });
 // 支出合計金額を算出
 const amountTotal = computed(() => {
-    return items.value.reduce((sum, item) => sum + (item.amount || 0), 0);
+    return filteredItems.value.reduce((sum, item) => sum + (item.amount || 0), 0);
 });
 // try,catchのエラー処理をしつつ、fetch apiにより非同期に選択月のitems取得
 const fetchData = async () => {
@@ -104,7 +116,24 @@ const deleteItem = (id) => {
                             </div>
                             <div class="px-2 py-2 text-sm text-gray-900 dark:text-white whitespace-nowrap">
                                 <!-- 現在日時表示とメソッドの切り分け修正予定 -->
-                                {{ formattedPeriod }}支出合計 ¥ {{ amountTotal.toLocaleString() }}
+                                {{ formattedPeriod }}支出合計 &yen; {{ amountTotal.toLocaleString() }}
+                            </div>
+                            <div class="px-2">
+                                <Link :href="route('items.index')">
+                                <PrimaryButton class="bg-yellow-500">
+                                    Reset
+                                </PrimaryButton>
+                                </Link>
+                            </div>
+                            <div class="px-2">
+                                <div>
+                                    <select v-model="selectedCategory">
+                                        <option selected disabled value="">カテゴリー別合計</option>
+                                        <option v-for="category in categories" :value="category.id">
+                                            {{ category.name }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="px-2">
                                 <div>
@@ -140,7 +169,7 @@ const deleteItem = (id) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in sortedItems" :key="item.id"
+                                    <tr v-for="item in filteredItems" :key="item.id"
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <!-- <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
@@ -152,7 +181,7 @@ const deleteItem = (id) => {
                                         </th>
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
-                                            ¥ {{ item.amount.toLocaleString() }}
+                                            &yen; {{ item.amount.toLocaleString() }}
                                         </th>
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
