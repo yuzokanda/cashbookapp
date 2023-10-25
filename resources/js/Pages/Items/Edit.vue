@@ -5,10 +5,13 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
-// import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
     item: {
+        type: Object,
+        default: () => ({}),
+    },
+    category_id: {
         type: Object,
         default: () => ({}),
     },
@@ -18,7 +21,7 @@ const form = useForm({
     id: props.item.id,
     content: props.item.content,
     amount: props.item.amount,
-    category: props.item.category,
+    category_id: props.item.category_id,
     date: props.item.date,
 });
 
@@ -59,11 +62,18 @@ const submit = () => {
                                 <InputError class="mt-2" :message="form.errors.amount" />
                             </div>
                             <div>
-                                <InputLabel for="category" value="category" />
+                                <InputLabel for="category_id" value="category" />
 
-                                <TextInput id="category" type="text" class="mt-1 block w-40" v-model="form.category" required autocomplete="username" />
+                                <select id="category_id" class="mt-1 block w-40" v-model="form.category_id" required>
+                                    <option v-for="category in category_id" :value="category.id">
+                                        {{ category.name }}
+                                    </option>
+                                </select>
 
-                                <InputError class="mt-2" :message="form.errors.category" />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.category"
+                                />
                             </div>
                             <div>
                                 <InputLabel for="date" value="date" />

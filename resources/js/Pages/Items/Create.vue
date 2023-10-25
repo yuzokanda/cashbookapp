@@ -8,12 +8,19 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, reactive } from 'vue';
 import { useStore } from 'vuex';
 
+const props = defineProps({
+    category_id: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
 const store = useStore();
 
 const form = reactive(useForm({
     content: "",
     amount: "",
-    category: "",
+    category_id: "",
     date: "",
 }));
 
@@ -28,7 +35,6 @@ const submit = () => {
         onSuccess: () => {
             store.dispatch('updateSelectedPeriod', selectedPeriod.value);
             form.reset();
-            // Inertia.visit(route('items.index'));
             isSubmitting = false;
         },
     });
@@ -82,15 +88,13 @@ const submit = () => {
                                 />
                             </div>
                             <div>
-                                <InputLabel for="category" value="category" />
+                                <InputLabel for="category_id" value="category" />
 
-                                <TextInput
-                                    id="category"
-                                    type="text"
-                                    class="mt-1 block w-40"
-                                    v-model="form.category"
-                                    required
-                                />
+                                <select id="category_id" class="mt-1 block w-40" v-model="form.category_id" required>
+                                    <option v-for="category in category_id" :value="category.id">
+                                        {{ category.name }}
+                                    </option>
+                                </select>
 
                                 <InputError
                                     class="mt-2"
