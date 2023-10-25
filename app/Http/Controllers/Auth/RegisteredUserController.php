@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Category;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -42,6 +43,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // ユーザー作成後にデフォルトのカテゴリーを作成
+        $category_id = [1 =>'食費', 2 =>'交通費', 3 =>'衣料費', 4 =>'通信費', 5 =>'光熱費', 6 =>'雑費'];
+        foreach ($category_id as $id => $name) {
+            Category::create([
+                'category_id' => $id,
+                'name' => $name,
+                'user_id' => $user->id,  // ユーザーIDで紐付け
+            ]);
+        }
 
         event(new Registered($user));
 
