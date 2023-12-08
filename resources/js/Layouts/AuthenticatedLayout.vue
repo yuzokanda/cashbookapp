@@ -26,19 +26,19 @@ const showingNavigationDropdown = ref(false);
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
-                        <div class="flex">
+                        <div class="flex justify-start space-x-16">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center text-xl font-semibold uppercase leading-tight text-gray-800">
+                            <div class="flex items-center text-xl font-semibold uppercase leading-tight text-gray-800">
                                 <Link :href="route('index')">
-                                    CashBook
+                                    cashbook
                                 </Link>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
+                            <div class="flex sm:-my-px sm:ml-6 sm:flex uppercase">
                                 <NavLink :href="route('items.index')" :active="route().current('items.index')">
-                                    index
+                                    item
                                 </NavLink>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex uppercase">
+                            <div class="flex sm:-my-px sm:ml-6 sm:flex uppercase">
                                 <NavLink :href="route('categories.index')" :active="route().current('categories.index')">
                                     category
                                 </NavLink>

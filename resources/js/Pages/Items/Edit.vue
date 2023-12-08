@@ -26,18 +26,20 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route("items.update", props.item.id));
+    form.put(route('items.update', props.item.id), {
+        preserveScroll: true,
+    });
 };
 
 </script>
 
 <template>
-    <Head title="ITEM EDIT" />
+    <Head title="EDIT ITEM" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xm font-semibold uppercase leading-tight text-gray-800">
-                Item Edit
+                edit item
             </h2>
         </template>
 
@@ -49,38 +51,58 @@ const submit = () => {
                             <div>
                                 <InputLabel for="content" value="content" />
 
-                                <TextInput id="content" type="text" class="mt-1 block w-96" v-model="form.content" required
-                                    autofocus autocomplete="username" />
+                                <TextInput
+                                id="content"
+                                type="text"
+                                class="mt-1 block w-96"
+                                v-model="form.content"
+                                autofocus />
 
-                                <InputError class="mt-2" :message="form.errors.content" />
+                                <InputError
+                                class="mt-2"
+                                :message="form.errors.content" />
                             </div>
                             <div>
                                 <InputLabel for="amount" value="amount" />
 
-                                <TextInput id="amount" type="number" class="mt-1 block w-32" v-model="form.amount" required autocomplete="username" />
+                                <TextInput
+                                id="amount"
+                                type="number"
+                                class="mt-1 block w-32"
+                                v-model="form.amount"
+                                />
 
-                                <InputError class="mt-2" :message="form.errors.amount" />
+                                <InputError
+                                class="mt-2"
+                                :message="form.errors.amount" />
                             </div>
                             <div>
                                 <InputLabel for="category_id" value="category" />
 
-                                <select id="category_id" class="mt-1 block w-40" v-model="form.category_id" required>
-                                    <option v-for="category in category_id" :value="category.id">
+                                <select id="category_id" class="mt-1 block w-40" v-model="form.category_id">
+                                    <option v-for="category in category_id" :key="category" :value="category.id">
                                         {{ category.name }}
                                     </option>
                                 </select>
 
                                 <InputError
                                     class="mt-2"
-                                    :message="form.errors.category"
+                                    :message="form.errors.category_id"
                                 />
                             </div>
                             <div>
                                 <InputLabel for="date" value="date" />
 
-                                <TextInput id="date" type="date" class="mt-1 block w-40" v-model="form.date" required autocomplete="username" />
+                                <TextInput
+                                id="date"
+                                type="date"
+                                class="mt-1 block w-40"
+                                v-model="form.date"
+                                />
 
-                                <InputError class="mt-2" :message="form.errors.date" />
+                                <InputError
+                                class="mt-2"
+                                :message="form.errors.date" />
                             </div>
                             <div class="flex gap-4">
                             <div>

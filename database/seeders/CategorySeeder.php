@@ -14,7 +14,27 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         Category::create([
-            'name' => '食費',
+            'name' => '食料品',
+            'user_id' => 0,
+        ]);
+
+        Category::create([
+            'name' => '交通',
+            'user_id' => 0,
+        ]);
+
+        Category::create([
+            'name' => '衣料品',
+            'user_id' => 0,
+        ]);
+
+        Category::create([
+            'name' => '通信',
+            'user_id' => 0,
+        ]);
+
+        Category::create([
+            'name' => '光熱',
             'user_id' => 0,
         ]);
 
@@ -24,22 +44,7 @@ class CategorySeeder extends Seeder
         ]);
 
         Category::create([
-            'name' => '交通費',
-            'user_id' => 0,
-        ]);
-
-        Category::create([
-            'name' => '衣服費',
-            'user_id' => 0,
-        ]);
-
-        Category::create([
-            'name' => '光熱費',
-            'user_id' => 0,
-        ]);
-
-        Category::create([
-            'name' => '通信費',
+            'name' => '雑費',
             'user_id' => 0,
         ]);
     }

@@ -4,6 +4,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref, onMounted } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
+
 const props = defineProps({
     categories: {
         type: Object,
@@ -13,32 +14,33 @@ const props = defineProps({
 
 const form = useForm({});
 
-// const store = useStore();
-
 let categories = ref([]);
 
 onMounted(() => {
     categories.value = props.categories;
 });
 
-const deleteCategory = (id) => {
-    if (confirm("本当に削除しますか？")) {
-        form.delete(route("categories.destroy", id), {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => location.reload(),
-        });
-    };
-};
+// const deleteCategory = (id) => {
+//     if (confirm("本当に削除しますか？")) {
+//         form.delete(route("categories.destroy", id), {
+//             preserveScroll: true,
+//             preserveState: true,
+//             onSuccess: () => location.reload(),
+//         });
+//     };
+// };
 </script>
 
 <template>
-    <Head title="Categories" />
+    <Head title="INDEX CATEGORIES" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="text-xm font-semibold uppercase leading-tight text-gray-800">
-                CATEGORIES
+                index categories
+            </div>
+            <div v-if="$page.props.flash.message" class="bg-gray-400 text-white text-center">
+                {{ $page.props.flash.message }}
             </div>
         </template>
 
@@ -64,8 +66,11 @@ const deleteCategory = (id) => {
                                             Name
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Delete
+                                            Update
                                         </th>
+                                        <!-- <th scope="col" class="px-6 py-3">
+                                            Delete
+                                        </th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -75,11 +80,17 @@ const deleteCategory = (id) => {
                                             class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
                                             {{ category.name }}
                                         </th>
+                                        <!-- <td class="px-6 py-4">
+                                            <Link :href="route('items.edit', item.id)" class="px-4 py-2 text-white bg-blue-600 rounded-lg">Edit</Link>
+                                        </td> -->
                                         <td class="px-6 py-4">
+                                            <Link :href="route('categories.edit', category.id)" class="px-4 py-2 text-white bg-blue-600 rounded-lg">Edit</Link>
+                                        </td>
+                                        <!-- <td class="px-6 py-4">
                                             <PrimaryButton class="bg-red-700" @click="deleteCategory(category.id)">
                                                 Delete
                                             </PrimaryButton>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 </tbody>
                             </table>
