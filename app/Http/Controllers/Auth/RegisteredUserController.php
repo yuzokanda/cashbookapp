@@ -45,7 +45,15 @@ class RegisteredUserController extends Controller
         ]);
 
         // ユーザー作成後にデフォルトのカテゴリーを作成
-        $category_id = [1 =>'食費', 2 =>'交通費', 3 =>'衣料費', 4 =>'通信費', 5 =>'光熱費', 6 =>'雑費'];
+        $category_id = [
+            1 =>'食料品',
+            2 =>'交通',
+            3 =>'衣料品',
+            4 =>'通信',
+            5 =>'光熱',
+            6 =>'レジャー',
+            7 =>'雑費'
+        ];
         foreach ($category_id as $id => $name) {
             Category::create([
                 'category_id' => $id,

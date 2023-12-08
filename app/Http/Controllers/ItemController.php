@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ItemStoreRequest;
 
 class ItemController extends Controller
 {
@@ -47,15 +48,8 @@ class ItemController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(ItemStoreRequest $request)
     {
-        $request->validate([
-            'content' => 'required|string',
-            'amount' => 'required|numeric',
-            'category_id' => 'required',
-            'date' => 'required|date'
-        ]);
-
         $user_id = Auth::user()->id;
 
         Item::create([
@@ -66,7 +60,7 @@ class ItemController extends Controller
             'date' => $request->date
         ]);
 
-        return redirect()->route('items.index')->with('message', 'Item Created Successfully');
+        return redirect()->route('items.index')->with('message', '支出項目が追加されました！');
     }
 
     public function edit(Item $item)
@@ -79,28 +73,21 @@ class ItemController extends Controller
         ]);
     }
 
-    public function update(Request $request, Item $item)
+    public function update(ItemStoreRequest $request, Item $item)
     {
-        $request->validate([
-            'content' => 'required|string',
-            'amount' => 'required|numeric',
-            'category_id' => 'required',
-            'date' => 'required|date'
-        ]);
-
         $item->content = $request->content;
         $item->amount = $request->amount;
         $item->category_id = $request->category_id;
         $item->date = $request->date;
         $item->save();
 
-        return redirect()->route('items.index')->with('message', 'Item Updated Successfully');
+        return redirect()->route('items.index')->with('message', '支出項目が編集されました！');
     }
 
     public function destroy(Item $item)
     {
         $item->delete();
 
-        return redirect()->route('items.index')->with('message', 'Item Delete Successfully');
+        return redirect()->route('items.index')->with('message', '支出項目が削除されました！');
     }
 }

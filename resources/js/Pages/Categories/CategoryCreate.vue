@@ -20,12 +20,12 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Create Category" />
+    <Head title="CREATE CATEGORY" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="text-xm font-semibold uppercase leading-tight text-gray-800">
-                CREATE CATEGORY
+                create category
             </div>
         </template>
         <!-- ここにカテゴリ作成フォームを表示 -->
@@ -57,7 +57,7 @@ const submit = () => {
                                         type="submit"
                                         class="mt-4"
                                         :class="{ 'opacity-25': form.processing }"
-                                        :disabled="form.processing || isSubmitting"
+                                        :disabled="form.processing"
                                         @click="submit"
                                     >
                                         Add

@@ -25,22 +25,31 @@ const store = useStore();
 
 let items = ref([]);
 
+// 現在の年月日時を取得
+const now = new Date();
+// 現在の年を取得
+const year = now.getFullYear();
+// 現在の月を取得
+const month = now.getMonth() + 1;
+// 現在年月をYYYY-MMの形式で取得
+const yearMonth = `${year}-${month.toString().padStart(2, '0')}`;
 
-let selectedPeriod = ref(store.state.selectedPeriod || props.periods[0]);
+// 選択年月は、状況により取るべき値が変わるように設定
+let selectedPeriod = ref(store.state.selectedPeriod || props.periods[0] || yearMonth);
 
-// computedにより値が変化した場合のみ選択処理された年月を年と月に分離し代入
+// 選択年月が存在する場合、年月のハイフンを削除し、年と月に分ける
 const parts = computed(() => {
     return selectedPeriod.value ? selectedPeriod.value.split('-') : [];
 });
-// computedにより値が変化した場合のみ分離処理した年を代入
+// 分離処理された年の値の変化を監視
 const selectYear = computed(() => {
     return parts.value[0];
 });
-// computedにより値が変化した場合のみ分離処理された月を代入
+// 分離処理された月を整数値の変換し、値の変化を監視
 const selectMonth = computed(() => {
     return parseInt(parts.value[1]);
 });
-// computedにより値が変化した場合のみ日本語形式(⚪︎年⚪︎月)に処理された値を代入
+// 日本語表示形式(⚪︎年⚪︎月)に処理された値の変化を監視
 const formattedPeriod = computed(() => {
     return `${selectYear.value}年${selectMonth.value}月`;
 });
@@ -57,7 +66,7 @@ const filteredItems = computed(() => {
 const amountTotal = computed(() => {
     return filteredItems.value.reduce((sum, item) => sum + (item.amount || 0), 0);
 });
-// try,catchのエラー処理をしつつ、fetch apiにより非同期に選択月のitems取得
+// fetchにより非同期に選択月のitemsをtry,catchのエラー処理をしつつ取得
 const fetchData = async () => {
     try {
         const response = await fetch(`/items/${store.state.selectedPeriod}`);
@@ -85,7 +94,7 @@ const changePeriod = async (period) => {
 
 const deleteItem = (id) => {
     if (confirm("本当に削除しますか？")) {
-        form.delete(route("items.destroy", id), {
+        form.delete(route('items.destroy', id), {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => fetchData(),
@@ -95,12 +104,15 @@ const deleteItem = (id) => {
 </script>
 
 <template>
-    <Head title="items" />
+    <Head title="INDEX ITEMS" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="text-xm font-semibold uppercase leading-tight text-gray-800">
-                ITEMS
+                index items
+            </div>
+            <div v-if="$page.props.flash.message" class="bg-gray-400 text-white text-center">
+                {{ $page.props.flash.message }}
             </div>
         </template>
 
@@ -108,20 +120,19 @@ const deleteItem = (id) => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <div class="flex justify-between ... mb-2">
+                        <div class="flex justify-between ... mb-2 overflow-x-auto">
                             <div class="px-2">
                                 <Link :href="route('items.create')">
                                 <PrimaryButton class="bg-green-700">Add Item</PrimaryButton>
                                 </Link>
                             </div>
                             <div class="px-2 py-2 text-sm text-gray-900 dark:text-white whitespace-nowrap">
-                                <!-- 現在日時表示とメソッドの切り分け修正予定 -->
                                 {{ formattedPeriod }}支出合計 &yen; {{ amountTotal.toLocaleString() }}
                             </div>
                             <div class="px-2">
                                 <Link :href="route('items.index')">
                                 <PrimaryButton class="bg-yellow-500">
-                                    Reset
+                                    All Category
                                 </PrimaryButton>
                                 </Link>
                             </div>
@@ -129,7 +140,7 @@ const deleteItem = (id) => {
                                 <div>
                                     <select v-model="selectedCategory">
                                         <option selected disabled value="">カテゴリー別合計</option>
-                                        <option v-for="category in categories" :value="category.id">
+                                        <option v-for="category in categories" :key="category" :value="category.id">
                                             {{ category.name }}
                                         </option>
                                     </select>
@@ -138,7 +149,7 @@ const deleteItem = (id) => {
                             <div class="px-2">
                                 <div>
                                     <select v-model.lazy="selectedPeriod" @change="changePeriod (selectedPeriod)">
-                                        <option v-for="period in periods" :key="period"     :value="period">{{ period }}</option>
+                                        <option v-for="period in periods" :key="period" :value="period">{{ period }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -171,10 +182,6 @@ const deleteItem = (id) => {
                                 <tbody>
                                     <tr v-for="item in filteredItems" :key="item.id"
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <!-- <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
-                                                {{ item.id }}
-                                        </th> -->
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 dark:text-white  whitespace-nowrap">
                                             {{ item.content }}

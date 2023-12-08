@@ -5,8 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref, reactive } from 'vue';
-import { useStore } from 'vuex';
+import { reactive } from 'vue';
 
 const props = defineProps({
     category_id: {
@@ -15,8 +14,6 @@ const props = defineProps({
     },
 });
 
-const store = useStore();
-
 const form = reactive(useForm({
     content: "",
     amount: "",
@@ -24,16 +21,12 @@ const form = reactive(useForm({
     date: "",
 }));
 
-let selectedPeriod = ref(store.state.selectedPeriod);
-
 let isSubmitting = false;
 const submit = () => {
     isSubmitting = true;
     form.post(route('items.store'), {
-        preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
-            store.dispatch('updateSelectedPeriod', selectedPeriod.value);
             form.reset();
             isSubmitting = false;
         },
@@ -43,11 +36,11 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="ITEM CREATE" />
+    <Head title="CREATE ITEM" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xm uppercase text-gray-800 leading-tight">Item Create</h2>
+            <h2 class="font-semibold text-xm uppercase text-gray-800 leading-tight">create item</h2>
         </template>
         <div class="py-12">
             <div class="mx-auto max-w-3xl">
@@ -91,14 +84,14 @@ const submit = () => {
                                 <InputLabel for="category_id" value="category" />
 
                                 <select id="category_id" class="mt-1 block w-40" v-model="form.category_id" required>
-                                    <option v-for="category in category_id" :value="category.id">
+                                    <option v-for="category in category_id" :key="category" :value="category.id">
                                         {{ category.name }}
                                     </option>
                                 </select>
 
                                 <InputError
                                     class="mt-2"
-                                    :message="form.errors.category"
+                                    :message="form.errors.category_id"
                                 />
                             </div>
                             <div>
@@ -118,25 +111,25 @@ const submit = () => {
                                 />
                             </div>
 
-                        <div class="flex gap-4">
-                            <div>
-                            <PrimaryButton
-                                type="submit"
-                                class="mt-4"
-                                :class="{ 'opacity-25': form.processing }"
-                                :disabled="form.processing || isSubmitting"
-                                @click="submit"
-                            >
-                                Add
-                            </PrimaryButton>
+                            <div class="flex gap-4">
+                                <div>
+                                    <PrimaryButton
+                                        type="submit"
+                                        class="mt-4"
+                                        :class="{ 'opacity-25': form.processing }"
+                                        :disabled="form.processing || isSubmitting"
+                                        @click="submit"
+                                    >
+                                        Add
+                                    </PrimaryButton>
+                                </div>
+                                <!-- Indexページに戻るボタン追加 -->
+                                <div>
+                                    <Link :href="route('items.index')">
+                                        <PrimaryButton class="mt-4 bg-violet-700">Return</PrimaryButton>
+                                    </Link>
+                                </div>
                             </div>
-                            <!-- Indexページに戻るボタン追加 -->
-                            <div>
-                            <Link :href="route('items.index')">
-                                <PrimaryButton class="mt-4 bg-violet-700">Return</PrimaryButton>
-                            </Link>
-                            </div>
-                        </div>
 
                         </form>
                     </div>

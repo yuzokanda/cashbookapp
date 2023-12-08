@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CategoryStoreRequest;
 
 class CategoryController extends Controller
 {
@@ -23,12 +24,8 @@ class CategoryController extends Controller
         return Inertia::render('Categories/CategoryCreate');
     }
 
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
         $user_id = Auth::user()->id;
 
         Category::create([
@@ -36,13 +33,28 @@ class CategoryController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->route('categories.index')->with('message', 'Category Created Successfully');
+        return redirect()->route('categories.index')->with('message', 'カテゴリーを追加しました！');
     }
 
-    public function destroy(Category $category)
+    public function edit(Category $category)
     {
-        $category->delete();
-
-        return redirect()->route('categories.index')->with('message', 'Category Delete Successfully');
+        return Inertia::render('Categories/CategoryEdit', [
+            'category' => $category,
+        ]);
     }
+
+    public function update(CategoryStoreRequest $request, Category $category)
+    {
+        $category->name = $request->name;
+        $category->save();
+
+        return redirect()->route('categories.index')->with('message', 'カテゴリーを更新しました！');
+    }
+
+    // public function destroy(Category $category)
+    // {
+    //     $category->delete();
+
+    //     return redirect()->route('categories.index')->with('message', 'Category Delete Successfully');
+    // }
 }
