@@ -21,15 +21,9 @@ const form = reactive(useForm({
     date: "",
 }));
 
-let isSubmitting = false;
 const submit = () => {
-    isSubmitting = true;
     form.post(route('items.store'), {
         preserveState: true,
-        onSuccess: () => {
-            form.reset();
-            isSubmitting = false;
-        },
     });
 };
 
@@ -117,7 +111,7 @@ const submit = () => {
                                         type="submit"
                                         class="mt-4"
                                         :class="{ 'opacity-25': form.processing }"
-                                        :disabled="form.processing || isSubmitting"
+                                        :disabled="form.processing"
                                         @click="submit"
                                     >
                                         Add

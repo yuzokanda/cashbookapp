@@ -12,9 +12,7 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('categories.store'), {
-        preserveScroll: true,
         preserveState: true,
-        onSuccess: () => form.reset(),
     });
 };
 </script>
