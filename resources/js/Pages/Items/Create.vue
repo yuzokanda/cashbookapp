@@ -22,10 +22,19 @@ const form = reactive(useForm({
 }));
 
 const submit = () => {
+  // disabled属性を削除する
+    document.querySelector('button[type="submit"]').removeAttribute('disabled');
+
+  // submitメソッドを再実行する
     form.post(route('items.store'), {
         preserveState: true,
     });
 };
+// const submit = () => {
+//     form.post(route('items.store'), {
+//         preserveState: true,
+//     });
+// };
 
 </script>
 
