@@ -67,7 +67,6 @@ const submit = () => {
                                     type="text"
                                     class="mt-1 block w-96"
                                     v-model="form.content"
-                                    required
                                     autofocus
                                 />
                                 <InputError
@@ -83,7 +82,6 @@ const submit = () => {
                                     type="number"
                                     class="mt-1 block w-32"
                                     v-model="form.amount"
-                                    required
                                 />
 
                                 <InputError
@@ -94,7 +92,7 @@ const submit = () => {
                             <div>
                                 <InputLabel for="category_id" value="category" />
 
-                                <select id="category_id" class="mt-1 block w-40" v-model="form.category_id" required>
+                                <select id="category_id" class="mt-1 block w-40" v-model="form.category_id">
                                     <option v-for="category in category_id" :key="category" :value="category.id">
                                         {{ category.name }}
                                     </option>
@@ -113,7 +111,6 @@ const submit = () => {
                                     type="date"
                                     class="mt-1 block w-40"
                                     v-model="form.date"
-                                    required
                                 />
 
                                 <InputError
@@ -129,8 +126,6 @@ const submit = () => {
                                         class="mt-4"
                                         :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing"
-                                        @click="submit"
-                                        enabled
                                     >
                                         Add
                                     </PrimaryButton>
