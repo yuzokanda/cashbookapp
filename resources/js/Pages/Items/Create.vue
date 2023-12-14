@@ -21,20 +21,29 @@ const form = reactive(useForm({
     date: "",
 }));
 
-const submit = () => {
-  // disabled属性を削除する
-    document.querySelector('button[type="submit"]').removeAttribute('disabled');
+// const submitButton = ref(null);
 
-  // submitメソッドを再実行する
+// const submit = () => {
+//   // disabled属性を削除する
+//     submitButton.value.removeAttribute('disabled');
+
+//   // submitメソッドを再実行する
+//     form.post(route('items.store'), {
+//         preserveState: true,
+//     });
+
+//   // submitボタンを無効化する
+//     submitButton.value.setAttribute('disabled', 'disabled');
+// };
+
+// onMounted(() => {
+//     submitButton.value = document.querySelector('button[type="submit"]');
+// });
+const submit = () => {
     form.post(route('items.store'), {
         preserveState: true,
     });
 };
-// const submit = () => {
-//     form.post(route('items.store'), {
-//         preserveState: true,
-//     });
-// };
 
 </script>
 
@@ -61,7 +70,6 @@ const submit = () => {
                                     required
                                     autofocus
                                 />
-
                                 <InputError
                                     class="mt-2"
                                     :message="form.errors.content"
@@ -122,6 +130,7 @@ const submit = () => {
                                         :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing"
                                         @click="submit"
+                                        enabled
                                     >
                                         Add
                                     </PrimaryButton>
