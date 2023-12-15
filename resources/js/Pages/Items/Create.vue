@@ -21,29 +21,24 @@ const form = reactive(useForm({
     date: "",
 }));
 
-// const submitButton = ref(null);
-
+let isSubmitting = false;
+const submit = () => {
+    if (isSubmitting) {
+        return;
+    }
+    isSubmitting = true;
+    form.post(route('items.store'), {
+        preserveState: true,
+        onSuccess: () => {
+            isSubmitting = false;
+        },
+    });
+};
 // const submit = () => {
-//   // disabled属性を削除する
-//     submitButton.value.removeAttribute('disabled');
-
-//   // submitメソッドを再実行する
 //     form.post(route('items.store'), {
 //         preserveState: true,
 //     });
-
-//   // submitボタンを無効化する
-//     submitButton.value.setAttribute('disabled', 'disabled');
 // };
-
-// onMounted(() => {
-//     submitButton.value = document.querySelector('button[type="submit"]');
-// });
-const submit = () => {
-    form.post(route('items.store'), {
-        preserveState: true,
-    });
-};
 
 </script>
 
@@ -133,6 +128,17 @@ const submit = () => {
                                         Add
                                     </PrimaryButton>
                                 </div>
+                            <!-- <div class="flex gap-4">
+                                <div>
+                                    <PrimaryButton
+                                        type="submit"
+                                        class="mt-4"
+                                        :class="{ 'opacity-25': form.processing }"
+                                        :disabled="form.processing"
+                                    >
+                                        Add
+                                    </PrimaryButton>
+                                </div> -->
                                 <!-- Indexページに戻るボタン追加 -->
                                 <div>
                                     <Link :href="route('items.index')">
