@@ -8,7 +8,7 @@ use App\Models\Item;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\ItemStoreRequest;
+// use App\Http\Requests\ItemStoreRequest;
 
 class ItemController extends Controller
 {
@@ -48,8 +48,15 @@ class ItemController extends Controller
         ]);
     }
 
-    public function store(ItemStoreRequest $request)
+    public function store(Request $request)
     {
+
+        $request->validate([
+            'content' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric'],
+            'category_id' => ['required'],
+            'date' => ['required','date']
+        ]);
         $user_id = Auth::user()->id;
 
         Item::create([
