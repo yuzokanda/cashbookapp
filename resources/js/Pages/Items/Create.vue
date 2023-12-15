@@ -122,8 +122,6 @@ const submit = () => {
                                     <PrimaryButton
                                         type="submit"
                                         class="mt-4"
-                                        :class="{ 'opacity-25': form.processing }"
-                                        :disabled="form.processing"
                                     >
                                         Add
                                     </PrimaryButton>
