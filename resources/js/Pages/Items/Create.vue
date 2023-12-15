@@ -21,22 +21,22 @@ const form = reactive(useForm({
     date: "",
 }));
 
-let isSubmitting = false;
 const submit = () => {
-    if (isSubmitting) {
-        return;
-    }
-    isSubmitting = true;
     form.post(route('items.store'), {
         preserveState: true,
-        onSuccess: () => {
-            isSubmitting = false;
-        },
     });
 };
+// let isSubmitting = false;
 // const submit = () => {
+//     if (isSubmitting) {
+//         return;
+//     }
+//     isSubmitting = true;
 //     form.post(route('items.store'), {
 //         preserveState: true,
+//         onSuccess: () => {
+//             isSubmitting = false;
+//         },
 //     });
 // };
 
@@ -116,17 +116,7 @@ const submit = () => {
                                     :message="form.errors.date"
                                 />
                             </div>
-
                             <div class="flex gap-4">
-                                <div>
-                                    <PrimaryButton
-                                        type="submit"
-                                        class="mt-4"
-                                    >
-                                        Add
-                                    </PrimaryButton>
-                                </div>
-                            <!-- <div class="flex gap-4">
                                 <div>
                                     <PrimaryButton
                                         type="submit"
@@ -136,7 +126,7 @@ const submit = () => {
                                     >
                                         Add
                                     </PrimaryButton>
-                                </div> -->
+                                </div>
                                 <!-- Indexページに戻るボタン追加 -->
                                 <div>
                                     <Link :href="route('items.index')">
