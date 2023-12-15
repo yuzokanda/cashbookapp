@@ -117,7 +117,7 @@ const submit = () => {
                             </div>
                             <div class="flex gap-4">
                                 <div>
-                                    <PrimaryButton
+                                    <button
                                         type="submit"
                                         class="mt-4"
                                         :class="{ 'opacity-25': form.processing }"
@@ -125,7 +125,7 @@ const submit = () => {
                                         @click="submit"
                                     >
                                         Add
-                                    </PrimaryButton>
+                                    </button>
                                 </div>
                                 <!-- Indexページに戻るボタン追加 -->
                                 <div>
