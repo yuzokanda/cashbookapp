@@ -63,7 +63,6 @@ const submit = () => {
                                     class="mt-1 block w-96"
                                     v-model="form.content"
                                     autofocus
-                                    required
                                 />
                                 <InputError
                                     class="mt-2"
@@ -123,6 +122,7 @@ const submit = () => {
                                         class="mt-4"
                                         :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing"
+                                        @click="submit"
                                     >
                                         Add
                                     </PrimaryButton>
