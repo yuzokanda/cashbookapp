@@ -26,19 +26,6 @@ const submit = () => {
         preserveState: true,
     });
 };
-// let isSubmitting = false;
-// const submit = () => {
-//     if (isSubmitting) {
-//         return;
-//     }
-//     isSubmitting = true;
-//     form.post(route('items.store'), {
-//         preserveState: true,
-//         onSuccess: () => {
-//             isSubmitting = false;
-//         },
-//     });
-// };
 
 </script>
 
@@ -63,6 +50,7 @@ const submit = () => {
                                     class="mt-1 block w-96"
                                     v-model="form.content"
                                     autofocus
+                                    required
                                 />
                                 <InputError
                                     class="mt-2"
@@ -117,7 +105,7 @@ const submit = () => {
                             </div>
                             <div class="flex gap-4">
                                 <div>
-                                    <button
+                                    <PrimaryButton
                                         type="submit"
                                         class="mt-4"
                                         :class="{ 'opacity-25': form.processing }"
@@ -125,7 +113,7 @@ const submit = () => {
                                         @click="submit"
                                     >
                                         Add
-                                    </button>
+                                    </PrimaryButton>
                                 </div>
                                 <!-- Indexページに戻るボタン追加 -->
                                 <div>
