@@ -18,13 +18,13 @@ https://oviwan.xsrv.jp/
 
 | item index画面 | item index画面（category selectbox表示）|
 | :---- | :---- |
-|<img width="796" alt="item_index" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/d62dee03-a639-43c9-b90d-17ef126bf3d3">|<img width="437" alt="item_index_category_select" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/14ab13ac-7b7b-48ff-b9d7-dd0a0a77ae1b">|
-|＊ ALL CATEGORYボタンの設置<br>Aをクリックすると、カテゴリー別合計がリセットされ、全合計へと戻る<br><br> ＊ selectedPeriodの状態管理にvuexを使用<br>B削除ページはindexのまま、B追加B編集はそれぞれの<br>create,editページへ遷移し、削除、追加もしくは編集を実行後に<br>同年月（selectedperiod）ページにリダイレクトさせる為|＊ categoryごとの支出一覧表示<br>categoryセレクトボックスから選択したcategoryの支出項目一覧と合計金額を表示される|
+|<img width="796" alt="item_index" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/919f893a-8add-4a7d-b653-41864a20fdf2">|<img width="437" alt="item_index_category_select" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/14ab13ac-7b7b-48ff-b9d7-dd0a0a77ae1b">|
+|＊ ALL CATEGORYボタンの設置<br>Aをクリックすると、カテゴリー別合計がリセットされ、全合計へと戻る<br><br> ＊ selectedPeriodの状態管理にvuexを使用<br>Bの削除ボタン、追加ボタン、編集ボタンをクリックするとそれぞれの機能が動作するが、クリックしたindexの年月ページにリダイレクトするようクリック時のselectedPeriodをstateとして保持させ、保持したページにリダイレクトさせる為にvuexを使用<br><br>＊ C支出合計金額表示<br>選択した年月もしくはcategory別の支出合計金額を表示<br><br>＊ D滞在ページのマーク表示<br>現在滞在中なのは、どのページなのかをアンダーマークで表示<br><br>＊ Eログインユーザー名を表示<br>ユーザー名もしくは矢印をクリックでプロファイルとログアウトリンクを表示|＊ categoryごとの支出一覧表示<br>categoryセレクトボックスから選択したcategoryの支出項目一覧と合計金額を表示される|
 
 | item index画面(selectedPeriod index) |create item画面|
 | :---- | :---- |
-|<img width="496" alt="item_index_selectedPeriod" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/2acfc26c-fefc-4a5d-b3a4-c48dccc5c5d8">|<img width="389" alt="create_item_error" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/67188a22-4414-47ee-965f-f3542af5bcad">|
-|＊ selectedPeriodセレクトボックス<br>収支（item）が存在する年月（selectedPeriod）の一覧を表示し、年月を選択すると支出一覧と合計金額が表示される|バリデーションエラーテキスト日本語化|
+|<img width="496" alt="item_index_selectedPeriod" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/2acfc26c-fefc-4a5d-b3a4-c48dccc5c5d8">|<img width="389" alt="create_item_error" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/71e1cf9b-1dec-48b9-a19c-8e98631f4dd0">|
+|＊ selectedPeriodセレクトボックス<br>収支（item）が存在する年月（selectedPeriod）の一覧を表示し、年月を選択すると支出一覧と合計金額が表示される|バリデーションエラーテキスト日本語化<br><br>＊ RETURNボタンを設置<br>create、edit各ページに設置。クリックでitem_indexもしくはcategory_indexページへ遷移|
 
 |create item画面（category selectbox表示）|create item画面（date カレンダー表示）|
 | :---- | :---- |
@@ -45,6 +45,20 @@ https://oviwan.xsrv.jp/
 | :---- |
 |<img width="551" alt="edit_item_error" src="https://github.com/yuzokanda/cashbookapp/assets/112781298/531f87be-c77f-4fc0-97b5-b71c37443759">|
 |バリデーションエラーテキスト日本語化|
+
+## 使用技術
+
+- PHP 8.1
+- Laravel 10.10
+- Laravel Sail
+- Laravel Breeze
+- JavaScript
+- Vue.js 3.3.4
+- vite 4.0.0
+- Inertia.js 1.0.12
+- vuex 4.0.2
+- Tailwind CSS
+
 
 
 
